@@ -34,6 +34,29 @@ export function DeliverySection() {
             confirmación de eliminados y carrusel circular con navegación por
             botones/flechas y audio en paralelo).
           </li>
+          <li className="border-l-2 border-destructive/70 bg-card/60 px-4 py-2.5">
+            <strong className="font-semibold text-foreground">
+              Prohibido subir archivos{" "}
+              <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs text-foreground">
+                .exe
+              </code>
+              :
+            </strong>{" "}
+            el repositorio de GitHub debe contener únicamente código fuente y
+            archivos del proyecto (sin ejecutables ni carpetas compiladas como{" "}
+            <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">
+              bin/
+            </code>{" "}
+            u{" "}
+            <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">
+              obj/
+            </code>
+            ; utiliza un{" "}
+            <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">
+              .gitignore
+            </code>
+            ).
+          </li>
         </ul>
 
         <div className="border-l-2 border-destructive bg-destructive/10 px-4 py-3 text-sm leading-relaxed text-foreground/85 sm:text-base">

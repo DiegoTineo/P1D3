@@ -1,5 +1,6 @@
-import type { ReactNode } from "react"
+import { isValidElement, type ReactNode } from "react"
 import { cn } from "cn"
+import TechText from "@/components/TechText"
 import { useInView } from "@/hooks/useInView"
 
 interface SectionTitleProps {
@@ -8,21 +9,71 @@ interface SectionTitleProps {
   className?: string
 }
 
+function extractPlainText(node: ReactNode): string {
+  if (typeof node === "string" || typeof node === "number") {
+    return String(node)
+  }
+  if (Array.isArray(node)) {
+    return node.map(extractPlainText).join("")
+  }
+  if (isValidElement<{ children?: ReactNode }>(node)) {
+    // Skip TooltipContent text so only the visible heading text is extracted
+    const typeName =
+      typeof node.type === "function" ? node.type.name : undefined
+    if (typeName === "TooltipContent") {
+      return ""
+    }
+    return extractPlainText(node.props.children)
+  }
+  return ""
+}
+
 export function SectionTitle({ id, children, className }: SectionTitleProps) {
   const { ref, isInView } = useInView<HTMLDivElement>(0.2)
+  const plainText = extractPlainText(children).replace(/\s+/g, " ").trim()
 
   return (
-    <div ref={ref} className="space-y-3">
-      <h2
-        id={id}
+    <div ref={ref} className="space-y-2">
+      <h2 id={id} className="sr-only">
+        {plainText}
+      </h2>
+
+      <div
         className={cn(
-          "text-3xl font-extrabold tracking-tight text-foreground transition-all duration-700 ease-out motion-reduce:transition-none sm:text-4xl",
-          isInView ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0",
+          "relative h-14 w-full text-foreground sm:h-20",
           className
         )}
       >
-        {children}
-      </h2>
+        <TechText
+          text={plainText}
+          fontWeight={700}
+          fontSize={44}
+          reveal="letter"
+          dashLength={4}
+          dashGap={2}
+          specks={15}
+          intro="none"
+          introDuration={2}
+          clickKick
+          guides={false}
+          fontFamily=""
+          letterSpacing={-0.03}
+          accentColor="#FC73A9"
+          reach={160}
+          softness={0.7}
+          lineStyle="dashed"
+          strokeWidth={1.5}
+          speed={0.35}
+          bounce={0.4}
+          selection
+          labels
+          color="currentColor"
+          align="left"
+          draggable
+          sweep
+        />
+      </div>
+
       <div className="relative h-px w-full overflow-hidden bg-border">
         <div
           aria-hidden="true"

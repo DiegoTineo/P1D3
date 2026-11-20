@@ -25,7 +25,7 @@ export function TechnicalRequirementsSection({
       id="requisitos-tecnicos"
       title="Requisitos Técnicos y Arquitectura Obligatoria"
     >
-      <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_280px]">
+      <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_380px]">
         <div className="space-y-5 text-base leading-relaxed text-foreground/85 sm:text-lg">
           <p>
             <strong className="font-semibold text-foreground">
@@ -144,7 +144,7 @@ export function TechnicalRequirementsSection({
         <FloatingVisual
           src="./csharp-logo.png"
           alt="Logo de C# (.NET)"
-          className="max-w-[210px] sm:max-w-[240px]"
+          className="max-w-[320px] sm:max-w-[380px]"
           animationClassName="animate-breathe-slow"
           imageClassName="drop-shadow-[0_14px_32px_rgba(114,86,206,0.35)]"
           glowClassName="from-vice-indigo/30 via-vice-magenta/15 to-transparent"

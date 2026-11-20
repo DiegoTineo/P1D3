@@ -81,6 +81,7 @@ Recibe únicamente `bicolaPaginas` y `audioBase64`. Muestra siempre `bicolaPagin
 - **Video demostrativo subido a YouTube o Google Drive** (tope máximo: **20 minutos**) acompañado del enlace al **repositorio de GitHub** con el código fuente, incluyendo obligatoriamente:
   1. **Corrida en frío y defensa / explicación del código.**
   2. **Demostración de la ejecución completa del proyecto.**
+- **Prohibido subir archivos `.exe`:** El repositorio de GitHub debe contener únicamente código fuente y archivos del proyecto (sin ejecutables ni carpetas compiladas como `bin/` u `obj/`; utiliza `.gitignore`).
 - **Política de entregas demoradas:** Pasadas las **12:00 PM** se resta **1 punto por cada día de retraso**, con un tope máximo de **4 días (-4 puntos)**. Se tomará en cuenta tanto la **fecha de subida del video** como la **fecha de los commits en el repositorio de GitHub**.
 
 ---

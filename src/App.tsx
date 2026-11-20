@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { cn } from "cn"
 import { AppBar, type AppRoute } from "@/components/document/AppBar"
 import { DedicationFooter } from "@/components/document/DedicationFooter"
 import { DeliverySection } from "@/components/document/DeliverySection"
@@ -60,7 +61,12 @@ export function App() {
   }
 
   return (
-    <div className="min-h-svh bg-background pb-24 text-foreground selection:bg-vice-magenta/40 selection:text-white">
+    <div
+      className={cn(
+        "min-h-svh bg-background text-foreground selection:bg-vice-magenta/40 selection:text-white",
+        route !== "home" && "pb-20"
+      )}
+    >
       <AppBar currentRoute={route} onNavigate={navigate} />
 
       {route === "generic-types" ? (
@@ -98,8 +104,9 @@ export function App() {
             <LearningCalloutSection
               onOpenLearningOutcomes={() => navigate("que-aprendo")}
             />
-            <DedicationFooter />
           </main>
+
+          <DedicationFooter />
         </>
       )}
 

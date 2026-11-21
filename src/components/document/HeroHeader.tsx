@@ -50,6 +50,7 @@ export function HeroHeader() {
 
   return (
     <header
+      id="hero-header"
       ref={headerRef}
       className="relative flex min-h-[460px] w-full items-end overflow-hidden bg-background sm:min-h-[540px]"
     >

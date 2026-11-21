@@ -152,7 +152,7 @@ export function StringBuilderPage({ onBack }: StringBuilderPageProps) {
             </code>{" "}
             al guardar los caracteres del campo:
           </p>
-          <CodeBlock code={GOOD_EXTRACTOR_CODE} filename="FileProcessor.cs" />
+          <CodeBlock code={GOOD_EXTRACTOR_CODE} filename="ChannelEnqueuer.cs" />
         </section>
 
         <section className="space-y-4">

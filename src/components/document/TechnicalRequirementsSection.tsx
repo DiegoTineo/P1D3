@@ -8,9 +8,12 @@ import {
 } from "@/components/ui/tooltip"
 
 const TDA_FILES = [
+  "Nodo.cs (o clase interna en Bicola.cs)",
   "Bicola.cs",
   "PilaConBicola.cs",
   "ColaConBicola.cs",
+  "Registro.cs",
+  "Pagina.cs",
 ] as const
 
 interface TechnicalRequirementsSectionProps {
@@ -138,6 +141,52 @@ export function TechnicalRequirementsSection({
                 </li>
               ))}
             </ul>
+          </div>
+
+          <div className="flex items-start gap-3.5 border-l-2 border-amber-400/80 bg-amber-400/[0.06] px-4 py-3.5 text-sm leading-relaxed text-foreground/90 sm:text-base">
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              className="mt-0.5 size-6 shrink-0 drop-shadow-[0_2px_8px_rgba(245,196,81,0.45)]"
+            >
+              <defs>
+                <linearGradient
+                  id="metallic-gold-bookmark"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="100%"
+                >
+                  <stop offset="0%" stopColor="#FFF6C4" />
+                  <stop offset="28%" stopColor="#F5C451" />
+                  <stop offset="55%" stopColor="#B87A14" />
+                  <stop offset="78%" stopColor="#FFE28A" />
+                  <stop offset="100%" stopColor="#8F5B08" />
+                </linearGradient>
+              </defs>
+              <path
+                d="M6 3.5A2.5 2.5 0 0 1 8.5 1h7A2.5 2.5 0 0 1 18 3.5V22l-6-4-6 4V3.5Z"
+                fill="url(#metallic-gold-bookmark)"
+                stroke="#FFF6C4"
+                strokeWidth="0.7"
+                strokeOpacity="0.7"
+              />
+            </svg>
+            <p>
+              <strong className="font-semibold text-foreground">
+                Vista de portada obligatoria:
+              </strong>{" "}
+              La aplicación debe iniciar con una{" "}
+              <strong className="font-semibold text-foreground">
+                pantalla de portada
+              </strong>{" "}
+              que muestre la{" "}
+              <strong className="font-semibold text-foreground">
+                identificación completa de los estudiantes que conforman el
+                equipo
+              </strong>{" "}
+              (nombre, apellido y cédula) antes de pasar al flujo de las fases.
+            </p>
           </div>
         </div>
 

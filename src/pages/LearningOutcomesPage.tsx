@@ -55,6 +55,15 @@ const LEARNING_ITEMS: LearningItem[] = [
     accent: "border-vice-magenta",
   },
   {
+    title: "Lectura y Manejo de Archivos en C# (System.IO)",
+    category: "Entrada / Salida",
+    description:
+      "Leerás archivos de texto de gran tamaño usando File.ReadAllText, OpenFileDialog, rutas relativas con AppContext.BaseDirectory y StringReader para procesarlos línea por línea y previsualizarlos sin bloquear la interfaz.",
+    accent: "border-vice-pink",
+    guideRoute: "leer-archivo",
+    guideLabel: "Ver guía de Lectura de Archivos",
+  },
+  {
     title: "Manejo de Base64 e Imágenes en Memoria",
     category: "Datos Binarios",
     description:

@@ -23,9 +23,9 @@ export function DedicationFooter() {
       />
 
       {/* Content (no z-index stacking context so mix-blend-screen blends with palms) */}
-      <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-6 pt-16 pb-24 sm:px-10 sm:pt-20 sm:pb-28 lg:grid-cols-2">
+      <div className="relative mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-10 px-6 pt-16 pb-24 sm:px-10 sm:pt-20 sm:pb-28 lg:grid-cols-2">
         {/* Left: Frameless DitherVeil blended over the palms */}
-        <div className="relative h-[380px] w-full mix-blend-screen sm:h-[460px]">
+        <div className="relative h-[300px] w-full min-w-0 overflow-hidden mix-blend-screen sm:h-[420px] lg:h-[460px]">
           <DitherVeil
             src="https://images.unsplash.com/photo-1737071371043-761e02b1ef95?q=80&w=1400&auto=format&fit=crop"
             pattern="floyd"
@@ -49,7 +49,7 @@ export function DedicationFooter() {
         </div>
 
         {/* Right: Quote + Dedication */}
-        <div className="flex flex-col items-start gap-8 text-left">
+        <div className="flex min-w-0 flex-col items-start gap-8 text-left break-words">
           <blockquote className="space-y-2.5">
             <p className="text-xl font-medium tracking-tight text-white italic drop-shadow-[0_2px_10px_rgba(9,9,11,0.9)] sm:text-2xl">
               &ldquo;La programación no se trata de lo que sabes, sino de lo que

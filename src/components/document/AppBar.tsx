@@ -1,13 +1,16 @@
-import { useEffect, useState } from "react"
-import { Menu, X } from "lucide-react"
+import { useEffect, useState, type ComponentType } from "react"
+import { Boxes, GraduationCap, Home, LifeBuoy, Menu, X } from "lucide-react"
 import { cn } from "cn"
 
 export type AppRoute =
   | "home"
+  | "tdas"
+  | "ayuda"
   | "generic-types"
   | "string-builder"
   | "imagenes-base64"
   | "audio-base64"
+  | "leer-archivo"
   | "que-aprendo"
 
 interface AppBarProps {
@@ -15,12 +18,99 @@ interface AppBarProps {
   onNavigate: (route: AppRoute) => void
 }
 
-const NAV_ITEMS: { route: AppRoute; href: string; label: string }[] = [
-  { route: "home", href: "#", label: "Proyecto 1" },
-  { route: "generic-types", href: "#/generic-types", label: "Generic Types" },
-  { route: "string-builder", href: "#/string-builder", label: "StringBuilder" },
-  { route: "que-aprendo", href: "#/que-aprendo", label: "¿Qué aprendo?" },
+interface NavItem {
+  route: AppRoute
+  href: string
+  label: string
+  icon: ComponentType<{ className?: string }>
+}
+
+const HELP_SUBROUTES: AppRoute[] = [
+  "ayuda",
+  "leer-archivo",
+  "generic-types",
+  "string-builder",
+  "imagenes-base64",
+  "audio-base64",
 ]
+
+const NAV_ITEMS: NavItem[] = [
+  { route: "home", href: "#", label: "Inicio", icon: Home },
+  { route: "tdas", href: "#/tdas", label: "TDAs", icon: Boxes },
+  { route: "ayuda", href: "#/ayuda", label: "Ayuda", icon: LifeBuoy },
+  {
+    route: "que-aprendo",
+    href: "#/que-aprendo",
+    label: "¿Qué aprendo?",
+    icon: GraduationCap,
+  },
+]
+
+function isNavItemActive(itemRoute: AppRoute, currentRoute: AppRoute): boolean {
+  if (itemRoute === "ayuda") {
+    return HELP_SUBROUTES.includes(currentRoute)
+  }
+  return currentRoute === itemRoute
+}
+
+interface NavLinksProps {
+  currentRoute: AppRoute
+  onSelect: (route: AppRoute) => void
+  variant: "desktop" | "mobile"
+}
+
+function NavLinks({ currentRoute, onSelect, variant }: NavLinksProps) {
+  const isMobile = variant === "mobile"
+
+  return (
+    <div
+      className={cn(
+        "flex text-sm font-medium",
+        isMobile ? "flex-col gap-1" : "items-center gap-7"
+      )}
+    >
+      {NAV_ITEMS.map(({ route, href, label, icon: Icon }) => {
+        const isActive = isNavItemActive(route, currentRoute)
+
+        return (
+          <a
+            key={route}
+            href={href}
+            onClick={(e) => {
+              e.preventDefault()
+              onSelect(route)
+            }}
+            className={cn(
+              "group relative inline-flex items-center gap-2 transition-colors duration-200",
+              isMobile ? "w-fit py-2.5" : "py-1",
+              isActive
+                ? "text-vice-pink"
+                : "text-muted-foreground hover:text-foreground"
+            )}
+          >
+            <Icon
+              className={cn(
+                "size-4 shrink-0 transition-colors duration-200",
+                isActive
+                  ? "text-vice-pink"
+                  : "text-muted-foreground group-hover:text-vice-orange"
+              )}
+            />
+            <span>{label}</span>
+            <span
+              aria-hidden="true"
+              className={cn(
+                "absolute inset-x-0 h-0.5 origin-left rounded-full bg-gradient-to-r from-vice-magenta via-vice-pink to-vice-orange transition-transform duration-300 ease-out",
+                isMobile ? "bottom-1" : "-bottom-0.5",
+                isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+              )}
+            />
+          </a>
+        )
+      })}
+    </div>
+  )
+}
 
 export function AppBar({ currentRoute, onNavigate }: AppBarProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -63,37 +153,12 @@ export function AppBar({ currentRoute, onNavigate }: AppBarProps) {
         </a>
 
         {/* Desktop navigation */}
-        <div className="hidden items-center gap-7 text-sm font-medium md:flex">
-          {NAV_ITEMS.map(({ route, href, label }) => {
-            const isActive = currentRoute === route
-            return (
-              <a
-                key={route}
-                href={href}
-                onClick={(e) => {
-                  e.preventDefault()
-                  handleSelect(route)
-                }}
-                className={cn(
-                  "group relative py-1 transition-colors duration-200",
-                  isActive
-                    ? "text-vice-pink"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                <span>{label}</span>
-                <span
-                  aria-hidden="true"
-                  className={cn(
-                    "absolute inset-x-0 -bottom-0.5 h-0.5 origin-left rounded-full bg-gradient-to-r from-vice-magenta via-vice-pink to-vice-orange transition-transform duration-300 ease-out",
-                    isActive
-                      ? "scale-x-100"
-                      : "scale-x-0 group-hover:scale-x-100"
-                  )}
-                />
-              </a>
-            )
-          })}
+        <div className="hidden md:block">
+          <NavLinks
+            currentRoute={currentRoute}
+            onSelect={handleSelect}
+            variant="desktop"
+          />
         </div>
 
         {/* Mobile hamburger trigger */}
@@ -132,29 +197,11 @@ export function AppBar({ currentRoute, onNavigate }: AppBarProps) {
           id="mobile-nav-menu"
           className="animate-in fade-in slide-in-from-top-2 duration-200 border-t border-border/70 bg-[#0B0A0F]/95 px-6 py-3 backdrop-blur-xl md:hidden"
         >
-          <div className="flex flex-col gap-1">
-            {NAV_ITEMS.map(({ route, href, label }) => {
-              const isActive = currentRoute === route
-              return (
-                <a
-                  key={route}
-                  href={href}
-                  onClick={(e) => {
-                    e.preventDefault()
-                    handleSelect(route)
-                  }}
-                  className={cn(
-                    "border-l-2 px-3.5 py-2.5 text-sm font-medium transition-colors",
-                    isActive
-                      ? "border-vice-pink bg-card/70 text-vice-pink"
-                      : "border-transparent text-muted-foreground hover:border-border hover:bg-card/40 hover:text-foreground"
-                  )}
-                >
-                  {label}
-                </a>
-              )
-            })}
-          </div>
+          <NavLinks
+            currentRoute={currentRoute}
+            onSelect={handleSelect}
+            variant="mobile"
+          />
         </div>
       )}
     </nav>

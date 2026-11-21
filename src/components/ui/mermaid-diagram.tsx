@@ -1,5 +1,7 @@
 import { useEffect, useId, useRef, useState } from "react"
+import { Maximize2 } from "lucide-react"
 import mermaid from "mermaid"
+import { DiagramLightbox } from "@/components/ui/diagram-lightbox"
 
 interface MermaidDiagramProps {
   chart: string
@@ -48,6 +50,7 @@ export function MermaidDiagram({ chart, caption }: MermaidDiagramProps) {
   const reactId = useId().replace(/:/g, "")
   const [svg, setSvg] = useState<string>("")
   const [error, setError] = useState<string | null>(null)
+  const [lightboxOpen, setLightboxOpen] = useState(false)
 
   useEffect(() => {
     const figure = figureRef.current
@@ -130,37 +133,79 @@ export function MermaidDiagram({ chart, caption }: MermaidDiagramProps) {
     }
   }, [chart, reactId])
 
-  return (
-    <figure
-      ref={figureRef}
-      className="relative overflow-hidden rounded-xl border border-border bg-card/70 p-4 sm:p-6"
-    >
-      {/* Top cinema letterbox shutter */}
-      <span
-        ref={topBarRef}
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 z-10 h-1/2 origin-top border-b border-vice-pink/35 bg-[#09090B] will-change-transform"
-      />
-      {/* Bottom cinema letterbox shutter */}
-      <span
-        ref={bottomBarRef}
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-1/2 origin-bottom border-t border-vice-pink/35 bg-[#09090B] will-change-transform"
-      />
+  const canExpand = Boolean(svg && !error)
 
-      {error ? (
-        <p className="font-mono text-xs text-destructive">{error}</p>
-      ) : (
-        <div
-          className="flex w-full justify-center overflow-x-auto [&_svg]:h-auto [&_svg]:max-w-full"
-          dangerouslySetInnerHTML={{ __html: svg }}
+  return (
+    <>
+      <figure
+        ref={figureRef}
+        onClick={canExpand ? () => setLightboxOpen(true) : undefined}
+        onKeyDown={
+          canExpand
+            ? (e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault()
+                  setLightboxOpen(true)
+                }
+              }
+            : undefined
+        }
+        role={canExpand ? "button" : undefined}
+        tabIndex={canExpand ? 0 : undefined}
+        aria-label={
+          canExpand
+            ? `Ampliar diagrama en pantalla completa${caption ? `: ${caption}` : ""}`
+            : undefined
+        }
+        className={`group relative overflow-hidden rounded-xl border border-border bg-card/70 p-4 transition-colors sm:p-6 ${
+          canExpand ? "cursor-zoom-in hover:border-vice-pink/50" : ""
+        }`}
+      >
+        {/* Top cinema letterbox shutter */}
+        <span
+          ref={topBarRef}
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-0 z-10 h-1/2 origin-top border-b border-vice-pink/35 bg-[#09090B] will-change-transform"
+        />
+        {/* Bottom cinema letterbox shutter */}
+        <span
+          ref={bottomBarRef}
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-1/2 origin-bottom border-t border-vice-pink/35 bg-[#09090B] will-change-transform"
+        />
+
+        {canExpand && (
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute top-3 right-3 z-[5] flex items-center gap-1.5 rounded-md border border-border/70 bg-background/80 px-2 py-1 text-[11px] font-medium text-muted-foreground opacity-75 backdrop-blur transition-all group-hover:border-vice-pink/50 group-hover:text-vice-pink group-hover:opacity-100"
+          >
+            <Maximize2 className="size-3.5" />
+            <span className="hidden sm:inline">Ampliar</span>
+          </span>
+        )}
+
+        {error ? (
+          <p className="font-mono text-xs text-destructive">{error}</p>
+        ) : (
+          <div
+            className="flex w-full justify-center overflow-x-auto [&_svg]:h-auto [&_svg]:max-w-full"
+            dangerouslySetInnerHTML={{ __html: svg }}
+          />
+        )}
+        {caption && (
+          <figcaption className="mt-4 border-t border-border/60 pt-3 text-center text-xs text-muted-foreground sm:text-sm">
+            {caption}
+          </figcaption>
+        )}
+      </figure>
+
+      {lightboxOpen && canExpand && (
+        <DiagramLightbox
+          svg={svg}
+          caption={caption}
+          onClose={() => setLightboxOpen(false)}
         />
       )}
-      {caption && (
-        <figcaption className="mt-4 border-t border-border/60 pt-3 text-center text-xs text-muted-foreground sm:text-sm">
-          {caption}
-        </figcaption>
-      )}
-    </figure>
+    </>
   )
 }

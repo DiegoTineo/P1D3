@@ -1,4 +1,13 @@
 import { Download, ExternalLink } from "lucide-react"
+import {
+  FaArrowsRotate,
+  FaBookOpen,
+  FaEye,
+  FaFileLines,
+  FaImages,
+  FaTrashCan,
+} from "react-icons/fa6"
+import { GiStack } from "react-icons/gi"
 import { DocumentSection } from "@/components/document/DocumentSection"
 import { PhaseBlock } from "@/components/document/PhaseBlock"
 import {
@@ -14,11 +23,72 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 
+function RegistroTooltip() {
+  return (
+    <Tooltip>
+      <TooltipTrigger
+        render={
+          <code className="cursor-help rounded bg-muted px-1.5 py-0.5 font-mono text-sm font-semibold text-vice-pink underline decoration-vice-pink/60 decoration-dotted underline-offset-4 hover:text-vice-orange" />
+        }
+      >
+        Registro
+      </TooltipTrigger>
+      <TooltipContent className="max-w-xs space-y-1.5 p-3 leading-snug">
+        <p className="font-mono text-xs font-semibold">TDA Registro (Registro.cs)</p>
+        <ul className="space-y-1 text-xs">
+          <li>
+            <code className="font-mono font-semibold">Id</code> (int): identificador único.
+          </li>
+          <li>
+            <code className="font-mono font-semibold">Canal</code> (int): canal destino (1, 2 o 3).
+          </li>
+          <li>
+            <code className="font-mono font-semibold">Operacion</code> (string): AUDIO, IMAGEN, TEXTO, DESTRUIR o INVERTIR.
+          </li>
+          <li>
+            <code className="font-mono font-semibold">Payload</code> (string): Base64, texto invertido o vacío.
+          </li>
+        </ul>
+      </TooltipContent>
+    </Tooltip>
+  )
+}
+
+function PaginaTooltip() {
+  return (
+    <Tooltip>
+      <TooltipTrigger
+        render={
+          <code className="cursor-help rounded bg-muted px-1.5 py-0.5 font-mono text-sm font-semibold text-vice-pink underline decoration-vice-pink/60 decoration-dotted underline-offset-4 hover:text-vice-orange" />
+        }
+      >
+        Pagina
+      </TooltipTrigger>
+      <TooltipContent className="max-w-xs space-y-1.5 p-3 leading-snug">
+        <p className="font-mono text-xs font-semibold">TDA Pagina (Pagina.cs)</p>
+        <ul className="space-y-1 text-xs">
+          <li>
+            <code className="font-mono font-semibold">Numero</code> (int): índice de la página (1..N).
+          </li>
+          <li>
+            <code className="font-mono font-semibold">Imagen</code> (System.Drawing.Image? o Bitmap): referencia a <code className="font-mono">imagenActual</code> para PictureBox.
+          </li>
+          <li>
+            <code className="font-mono font-semibold">Descripcion</code> (string): texto ya desencriptado.
+          </li>
+        </ul>
+      </TooltipContent>
+    </Tooltip>
+  )
+}
+
 interface PipelineSectionProps {
+  onOpenReadFileGuide: () => void
   onOpenStringBuilder: () => void
   onOpenImagesGuide: () => void
   onOpenAudioGuide: () => void
   onOpenTransmissions: () => void
+  onOpenTdas: () => void
 }
 
 const DELIMITERS = [
@@ -54,10 +124,12 @@ const DELIMITERS = [
 ] as const
 
 export function PipelineSection({
+  onOpenReadFileGuide,
   onOpenStringBuilder,
   onOpenImagesGuide,
   onOpenAudioGuide,
   onOpenTransmissions,
+  onOpenTdas,
 }: PipelineSectionProps) {
   return (
     <DocumentSection
@@ -82,13 +154,14 @@ export function PipelineSection({
         </>
       }
     >
-      <div className="space-y-14">
+      <div className="space-y-24 sm:space-y-28">
         <PhaseBlock
           phase="Fase 1"
           name="FileReader"
           params="ruta"
           returns="string"
-          accentClassName="border-vice-magenta/70"
+          tone="pink"
+          icon={FaFileLines}
         >
           <p>
             Lee el archivo único{" "}
@@ -101,14 +174,26 @@ export function PipelineSection({
             </button>{" "}
             y carga su contenido para pasarlo a la siguiente fase.
           </p>
-          <div>
+          <div className="flex flex-wrap items-center gap-4 pt-1">
             <a
               href="./transmisiones.txt"
               download="transmisiones.txt"
-              className="inline-flex items-center gap-2 rounded-md border border-border bg-card/80 px-3.5 py-2 font-mono text-xs font-semibold text-vice-pink transition-colors hover:border-vice-pink/60 hover:text-vice-orange sm:text-sm"
+              className="inline-flex items-center gap-3 rounded-lg border border-vice-pink/50 bg-vice-deep/45 px-6 py-3.5 font-mono text-sm font-semibold text-vice-pink shadow-lg shadow-vice-magenta/15 transition-all hover:border-vice-orange hover:bg-vice-deep/75 hover:text-vice-orange sm:text-base"
             >
-              <Download className="size-4" />
+              <Download className="size-5 shrink-0" />
               Descargar archivo transmisiones.txt
+            </a>
+
+            <a
+              href="#/leer-archivo"
+              onClick={(e) => {
+                e.preventDefault()
+                onOpenReadFileGuide()
+              }}
+              className="inline-flex items-center gap-1.5 font-mono text-xs font-semibold text-vice-pink underline decoration-vice-pink/60 underline-offset-4 transition-colors hover:text-vice-orange sm:text-sm"
+            >
+              ¿Cómo leer un archivo en C#?
+              <ExternalLink className="size-3.5" />
             </a>
           </div>
           <p className="text-sm text-foreground/80 sm:text-base">
@@ -119,22 +204,34 @@ export function PipelineSection({
             <strong className="font-semibold text-foreground">
               solo al hacer clic
             </strong>{" "}
-            y mostrar su contenido en pantalla antes de continuar.
+            y mostrar su contenido en pantalla antes de continuar.{" "}
+            <strong className="font-semibold text-foreground">
+              No imprimas el payload Base64 completo
+            </strong>{" "}
+            en un{" "}
+            <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">
+              TextBox
+            </code>{" "}
+            o{" "}
+            <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">
+              ListBox
+            </code>{" "}
+            (pesa varios MB y congela la interfaz): trunca cada línea larga a una
+            vista previa corta (ej. primeros 40–80 caracteres y su longitud).
           </p>
         </PhaseBlock>
 
         <PhaseBlock
           phase="Fase 2"
-          name="FileProcessor"
+          name="ChannelEnqueuer"
           params="contenido"
           returns="(canal1, canal2, canal3)"
-          accentClassName="border-vice-indigo/70"
+          tone="purple"
+          icon={GiStack}
         >
           <p>
             Recorre el archivo línea por línea, extrae cada{" "}
-            <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">
-              Registro
-            </code>{" "}
+            <RegistroTooltip />{" "}
             usando{" "}
             <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">
               PilaConBicola&lt;char&gt;
@@ -181,7 +278,43 @@ export function PipelineSection({
 
           <div className="space-y-3">
             <p className="text-sm font-semibold tracking-wide text-muted-foreground uppercase">
-              Delimitadores obligatorios por línea
+              TDA Registro (Registro.cs) y delimitadores obligatorios por línea
+            </p>
+            <p className="text-sm leading-relaxed text-foreground/85 sm:text-base">
+              Debes definir el TDA{" "}
+              <RegistroTooltip />{" "}
+              en su propio archivo{" "}
+              <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs text-foreground sm:text-sm">
+                Registro.cs
+              </code>{" "}
+              para encapsular los 4 campos extraídos de cada línea (
+              <code className="font-mono text-xs text-foreground">Id</code>,{" "}
+              <code className="font-mono text-xs text-foreground">Canal</code>,{" "}
+              <code className="font-mono text-xs text-foreground">Operacion</code>{" "}
+              y <code className="font-mono text-xs text-foreground">Payload</code>
+              ).
+            </p>
+            <p className="text-sm leading-relaxed text-foreground/85 sm:text-base">
+              <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">
+                canal1
+              </code>
+              ,{" "}
+              <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">
+                canal2
+              </code>{" "}
+              y{" "}
+              <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">
+                canal3
+              </code>{" "}
+              son 3 instancias de{" "}
+              <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs text-foreground">
+                ColaConBicola&lt;Registro&gt;
+              </code>{" "}
+              que almacenan exactamente el mismo TDA{" "}
+              <code className="font-mono text-xs text-foreground">Registro</code>;
+              lo único que cambia es el canal destino (
+              <strong className="font-semibold text-foreground">1, 2 o 3</strong>
+              ) donde se encola cada instancia.
             </p>
             <div className="grid gap-3 sm:grid-cols-2">
               {DELIMITERS.map((item) => (
@@ -279,7 +412,8 @@ export function PipelineSection({
           name="RoundRobinSimulator"
           params="canal1, canal2, canal3"
           returns="(colaGuardado, colaEliminados)"
-          accentClassName="border-vice-pink/70"
+          tone="pink"
+          icon={FaArrowsRotate}
         >
           <p>
             Ejecuta un ciclo{" "}
@@ -298,7 +432,8 @@ export function PipelineSection({
             <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">
               1 → 2 → 3 → 1 → 2 → 3 ...
             </code>
-            ):
+            ). Si un canal se vacía primero que el resto, cuando sea su turno se
+            salta directamente al siguiente:
           </p>
 
           <ul className="space-y-2.5 text-sm leading-relaxed text-foreground/85 sm:text-base">
@@ -358,6 +493,25 @@ export function PipelineSection({
             Prohibido vaciar un canal completo antes de pasar al siguiente.
           </p>
 
+          <p className="text-sm text-foreground/80 sm:text-base">
+            <strong className="font-semibold text-foreground">
+              Interacción y visualización obligatoria:
+            </strong>{" "}
+            Esta fase debe ejecutarse{" "}
+            <strong className="font-semibold text-foreground">
+              al hacer clic
+            </strong>{" "}
+            y mostrar en pantalla el contenido resultante de{" "}
+            <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">
+              colaGuardado
+            </code>{" "}
+            y{" "}
+            <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">
+              colaEliminados
+            </code>{" "}
+            antes de pasar a la Fase 4.
+          </p>
+
           <MermaidDiagram
             chart={PHASE_3_DIAGRAM}
             caption="Despacho Round-Robin turno a turno e inversión de ColaGuardado al detectar INVERTIR."
@@ -369,7 +523,8 @@ export function PipelineSection({
           name="Destroyer"
           params="colaEliminados"
           returns="string"
-          accentClassName="border-vice-orange/70"
+          tone="purple"
+          icon={FaTrashCan}
         >
           <p>
             Vacía{" "}
@@ -404,7 +559,8 @@ export function PipelineSection({
           name="StoryBuilder"
           params="colaGuardado"
           returns="(Bicola<Pagina>, audioBase64)"
-          accentClassName="border-vice-magenta/70"
+          tone="pink"
+          icon={FaBookOpen}
         >
           <p>
             Recorre{" "}
@@ -415,7 +571,7 @@ export function PipelineSection({
             <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">
               while (!colaGuardado.EstaVacia())
             </code>{" "}
-            manteniendo{" "}
+            manteniendo dos variables de estado vigentes durante el recorrido:{" "}
             <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">
               Image? imagenActual = null
             </code>{" "}
@@ -425,6 +581,57 @@ export function PipelineSection({
             </code>
             :
           </p>
+
+          <div className="space-y-3">
+            <p className="text-sm font-semibold tracking-wide text-muted-foreground uppercase">
+              Cómo usar el estado vigente y armar el TDA Pagina (Pagina.cs)
+            </p>
+            <p className="text-sm leading-relaxed text-foreground/85 sm:text-base">
+              Define el TDA <PaginaTooltip /> en su propio archivo{" "}
+              <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs text-foreground sm:text-sm">
+                Pagina.cs
+              </code>{" "}
+              con los atributos{" "}
+              <code className="font-mono text-xs text-foreground">Numero</code>{" "}
+              (<code className="font-mono text-xs text-muted-foreground">int</code>),{" "}
+              <code className="font-mono text-xs text-foreground">Imagen</code>{" "}
+              (<code className="font-mono text-xs text-muted-foreground">System.Drawing.Image?</code>) y{" "}
+              <code className="font-mono text-xs text-foreground">Descripcion</code>{" "}
+              (<code className="font-mono text-xs text-muted-foreground">string</code>).
+              El total de páginas se obtiene directamente desde{" "}
+              <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">
+                bicolaPaginas.Cantidad
+              </code>
+              .
+            </p>
+            <p className="text-sm leading-relaxed text-foreground/85 sm:text-base">
+              <strong className="font-semibold text-foreground">
+                Patrón de estado actual:
+              </strong>{" "}
+              <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">
+                imagenActual
+              </code>{" "}
+              conserva la última imagen decodificada; cada registro{" "}
+              <code className="font-mono text-xs text-foreground">TEXTO</code>{" "}
+              reutiliza esa misma{" "}
+              <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">
+                imagenActual
+              </code>{" "}
+              al construir su <PaginaTooltip /> hasta que llegue un nuevo registro{" "}
+              <code className="font-mono text-xs text-foreground">IMAGEN</code>{" "}
+              que la reemplace. Por su parte,{" "}
+              <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">
+                audioBase64
+              </code>{" "}
+              conserva la pista de fondo global del expediente fuera de{" "}
+              <code className="font-mono text-xs text-foreground">Pagina</code>{" "}
+              para devolverla junto con{" "}
+              <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">
+                Bicola&lt;Pagina&gt;
+              </code>{" "}
+              y reproducirla en la Fase 6.
+            </p>
+          </div>
 
           <ul className="space-y-2.5 text-sm leading-relaxed text-foreground/85 sm:text-base">
             <li className="border-l-2 border-border bg-card/60 px-4 py-2.5">
@@ -556,7 +763,7 @@ export function PipelineSection({
               </code>
               , crea{" "}
               <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs text-foreground">
-                new Pagina(numero++, total, imagenActual, texto)
+                new Pagina(numero++, imagenActual, texto)
               </code>{" "}
               y la inserta con{" "}
               <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs text-foreground">
@@ -601,7 +808,8 @@ export function PipelineSection({
           phase="Fase 6"
           name="Carousel"
           params="bicolaPaginas, audioBase64"
-          accentClassName="border-vice-indigo/70"
+          tone="purple"
+          icon={FaImages}
         >
           <p>
             Recibe únicamente{" "}
@@ -712,6 +920,48 @@ export function PipelineSection({
             caption="Rotación circular directa sobre Bicola<Pagina> sin índices ni List<T>."
           />
         </PhaseBlock>
+      </div>
+
+      <div className="mt-14 flex flex-col items-start gap-6 md:flex-row md:items-center md:gap-10">
+        <div className="relative flex shrink-0 items-center justify-center p-2">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 rounded-full bg-radial from-[#2DD4BF]/25 via-[#1B312E]/35 to-transparent blur-2xl"
+          />
+          <FaEye
+            aria-hidden="true"
+            className="animate-float-slow relative size-14 text-[#43B8A9] drop-shadow-[0_10px_24px_rgba(45,212,191,0.35)] sm:size-20"
+          />
+        </div>
+
+        <div className="flex min-w-0 flex-1 flex-col items-start justify-between gap-4 border-l-2 border-[#43B8A9] bg-[#1B312E]/45 px-5 py-4 sm:flex-row sm:items-center">
+          <div className="space-y-1">
+            <p className="text-sm font-semibold text-foreground sm:text-base">
+              TDAs básicos a implementar
+            </p>
+            <p className="text-xs leading-relaxed text-foreground/75 sm:text-sm">
+              Consulta el resumen de los 5 TDAs obligatorios (
+              <code className="font-mono text-foreground">Bicola&lt;T&gt;</code>,{" "}
+              <code className="font-mono text-foreground">PilaConBicola&lt;T&gt;</code>,{" "}
+              <code className="font-mono text-foreground">ColaConBicola&lt;T&gt;</code>,{" "}
+              <code className="font-mono text-foreground">Registro</code> y{" "}
+              <code className="font-mono text-foreground">Pagina</code>) con sus
+              operaciones y atributos.
+            </p>
+          </div>
+
+          <a
+            href="#/tdas"
+            onClick={(e) => {
+              e.preventDefault()
+              onOpenTdas()
+            }}
+            className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-[#43B8A9]/55 bg-[#1B312E]/85 px-4 py-2 font-mono text-xs font-semibold text-[#7CE8DA] transition-colors hover:border-[#6EE7D8] hover:bg-[#223E3A] hover:text-white sm:text-sm"
+          >
+            Ver TDAs a implementar
+            <ExternalLink className="size-3.5" />
+          </a>
+        </div>
       </div>
     </DocumentSection>
   )

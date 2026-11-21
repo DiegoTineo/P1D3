@@ -132,28 +132,7 @@ export function PipelineSection({
   onOpenTdas,
 }: PipelineSectionProps) {
   return (
-    <DocumentSection
-      id="pipeline-proyecto"
-      title={
-        <>
-          <Tooltip>
-            <TooltipTrigger
-              render={
-                <span className="cursor-help underline decoration-vice-orange/60 decoration-dotted underline-offset-6 hover:text-vice-pink" />
-              }
-            >
-              Pipeline
-            </TooltipTrigger>
-            <TooltipContent className="max-w-xs leading-snug">
-              Cadena secuencial de etapas donde la salida de una fase sirve
-              directamente como entrada de la siguiente, manteniendo cada paso
-              aislado y ordenado.
-            </TooltipContent>
-          </Tooltip>{" "}
-          del Proyecto
-        </>
-      }
-    >
+    <DocumentSection id="pipeline-proyecto" title="Pipeline del Proyecto">
       <div className="space-y-24 sm:space-y-28">
         <PhaseBlock
           phase="Fase 1"

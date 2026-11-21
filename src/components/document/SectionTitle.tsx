@@ -1,6 +1,7 @@
 import { isValidElement, type ReactNode } from "react"
 import { cn } from "cn"
 import TechText from "@/components/TechText"
+import { TooltipContent } from "@/components/ui/tooltip"
 import { useInView } from "@/hooks/useInView"
 
 interface SectionTitleProps {
@@ -17,10 +18,7 @@ function extractPlainText(node: ReactNode): string {
     return node.map(extractPlainText).join("")
   }
   if (isValidElement<{ children?: ReactNode }>(node)) {
-    // Skip TooltipContent text so only the visible heading text is extracted
-    const typeName =
-      typeof node.type === "function" ? node.type.name : undefined
-    if (typeName === "TooltipContent") {
+    if (node.type === TooltipContent) {
       return ""
     }
     return extractPlainText(node.props.children)
